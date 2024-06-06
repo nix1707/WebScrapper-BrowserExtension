@@ -1,0 +1,31 @@
+nav {
+    position: sticky;
+    position: -webkit-sticky;
+    background-color: #4fc87b;
+    padding: 15px;
+    top: 0;
+    width: 100%;
+    min-width: 70px;
+    justify-content: space-between;
+}
+
+.nav-items{
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+}
+
+.nav-link {
+    font-family: 'Roboto';
+    font-size: large;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.nav-link:hover {
+    background-color: #84d8a2;
+}
