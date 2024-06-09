@@ -1,7 +1,11 @@
+import { faMagnifyingGlass, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { ParseMethod } from "../../models/ParseMethod";
 import ParsedElement from "../../models/parsedElement";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Dropdown from "../Dropdown/Dropdown";
 import ResultDashboard from "../ResultDashboard/ResultDashboard";
+import { useEffect, useState } from "react";
+import SelectorValidator from "../../services/validators/SelectorValidator";
 
 interface Props {
   elementPath: string;
@@ -9,26 +13,35 @@ interface Props {
   handleClicked: () => void;
   answers?: ParsedElement[];
   setAnswers: (answer: ParsedElement[]) => void;
+  parseMethod: ParseMethod;
   setParseMethod: (parseMethod: ParseMethod) => void;
   manualMode: boolean;
   setManualMode: (mode: boolean) => void;
 };
 
-const Home = ({ 
-  elementPath, answers, setAnswers, 
-  handlePathChanged, handleClicked, 
-  setParseMethod, manualMode, setManualMode }: Props) => {
-  
+const Home = ({
+  elementPath, answers,
+  handlePathChanged, handleClicked,
+  setParseMethod, parseMethod, manualMode, setManualMode, setAnswers }: Props) => {
+
+  const [isValid, setIsValid] =
+    useState<{ result: boolean, msg: string }>({ result: true, msg: '' })
+
+  useEffect(() => {
+    if (manualMode) {
+      setIsValid(SelectorValidator.isValidPath(elementPath, parseMethod))
+    }
+  }, [elementPath, parseMethod, manualMode])
 
   return (
 
-    <div>
+    answers === undefined || answers.length > 0 === false ? (<div>
       <Dropdown
         onSelected={setParseMethod}
         items={
           [
-            { title: "By Xpath (Recommended)", Id: 0 },
-            { title: "By Css Selector", Id: 1 }
+            { title: "By Xpath (precise)", Id: 0 },
+            { title: "By Selector (all-out)", Id: 1 }
           ]
         } />
       <div className="container">
@@ -38,21 +51,39 @@ const Home = ({
         </div>
 
         {!manualMode && (
-          <p style={{fontSize: 'large'}}>
-            {"In manual mode you can enter your own CSS Selector or Xpath to find;"}<br></br>
+          <p style={{ fontSize: 'large' }}>
+            {"In manual mode you can enter your own CSS Selector or Xpath to find;"}
+            <br /><br />
             {"If this functionality is disabled, all paths will be taken from settings"}
           </p>)}
       </div>
 
-      {manualMode && <textarea value={elementPath} onChange={handlePathChanged}></textarea>}
-      {answers?.length! > 0 && <ResultDashboard answers={answers!} />}
+      {manualMode && (
+        <>
+          <textarea
+            value={elementPath}
+            onChange={handlePathChanged}
+            style={{ borderColor: isValid ? '#4ca0dc' : 'red' }}
+          />
+          {!isValid?.result &&
+            <div className="error-message">
+                <FontAwesomeIcon icon={faTriangleExclamation} /> 
+                { isValid.msg }
+                <FontAwesomeIcon icon={faTriangleExclamation} /> 
+            </div>}
+        </>
+      )}
 
-      <div className="button-group">
-        <button onClick={handleClicked}>Find</button>
-        <button onClick={() => setAnswers([])} className="button-outlined">Clear</button>
-      </div>
-    </div>
+      {isValid.result && <button onClick={handleClicked}>
+        {"Find "}
+        <FontAwesomeIcon icon={faMagnifyingGlass} />
+      </button>}
+
+    </div>) : (
+      <ResultDashboard setAnswers={setAnswers} answers={answers} />
+    )
   )
+
 }
 
 export default Home

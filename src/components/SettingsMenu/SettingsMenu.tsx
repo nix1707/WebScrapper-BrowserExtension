@@ -1,88 +1,84 @@
 import { useEffect, useState } from "react";
-import Config, { defaultEmptyConfig as defaultConfig, defaultOption } from "../../models/config";
+import Config from "../../models/config";
 import EditableText from "./EditableComponents/EditableText";
 import EditableOption from "./EditableComponents/EditableOption";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGears, faPlus, faTrash, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import OptionEditor from "../../services/ConfigEditor";
 
 
 const SettingsMenu = () => {
-    const [config, setConfig] = useState<Config | undefined>();
+    const [optionEditor, setOptionEditor] = useState<OptionEditor | undefined>();
 
     useEffect(() => {
         const storedConfig = localStorage.getItem('config');
         if (storedConfig) {
             const parsedConfig: Config = JSON.parse(storedConfig);
-            setConfig(parsedConfig);
+            setOptionEditor(new OptionEditor(parsedConfig));
         } else {
-            setConfig(defaultConfig);
-            localStorage.setItem('config', JSON.stringify(defaultConfig));
+            setOptionEditor(new OptionEditor());
+            localStorage.setItem('config', JSON.stringify(new OptionEditor().Config));
         }
     }, []);
 
     useEffect(() => {
-        if (config) {
-            localStorage.setItem('config', JSON.stringify(config));
+        if (optionEditor) {
+            localStorage.setItem('config', JSON.stringify(optionEditor.Config));
             console.log(`config updated ${new Date().toISOString()}`);
         }
-    }, [config]);
-
-    const handleOptionDelete = (index: number) => {
-        if (!config)
-            return;
-        const updatedOptions = config.options.filter((_, i) => i !== index);
-        setConfig({ ...config, options: updatedOptions });
-    }
-
-    const handleOptionEdit = (id: number, index: number) => {
-        if(!config)
-            return;
-
-        const updatedOptions = config.options.map((option, i) =>
-            i === index ? { ...option, parseMethod: id } : option
-        );
-        setConfig({ ...config, options: updatedOptions });
-    }
-
-    const handlePathEdit = (index: number, content: string) => {
-        if (!config)
-            return;
-        const updatedOptions = config.options.map((option, i) =>
-            i === index ? { ...option, path: content } : option
-        );
-        setConfig({ ...config, options: updatedOptions });
-    }
-
-    const handleOptionAdd = () => {
-        const updatedOptions = [...(config?.options || []), defaultOption];
-        setConfig({ ...config!, options: updatedOptions });
-    }
+    }, [optionEditor]);
 
     return (
         <div>
-            <h1 style={{ textAlign: 'center' }}>Your Configuration</h1>
+            <h1 style={{ textAlign: 'center', color: '#524C42', padding: 3, userSelect: 'none' }}>
+                Your Configuration
+                <FontAwesomeIcon icon={faGears} />
+            </h1>
             <div className="scrollable-container">
-                {config?.options.map((o, index) => (
+                {optionEditor?.config?.options.map((o, index) => (
                     <div className="card" key={index}>
                         <div className="button-group">
                             <EditableOption
-                                onEditing={(id) => {handleOptionEdit(id, index)}}  
+                                onEditing={(id) => {
+                                    optionEditor?.handleOptionMethodEdit(id, index);
+                                    setOptionEditor(new OptionEditor(optionEditor?.Config));
+                                }}
                                 defaultId={o.parseMethod} />
                             <button
                                 className="delete-button-small"
-                                onClick={() => handleOptionDelete(index)}
+                                onClick={() => {
+                                    const newOptionEditor = new OptionEditor(optionEditor?.Config);
+                                    newOptionEditor?.handleOptionDelete(index);
+                                    setOptionEditor(newOptionEditor);
+                                }}
                             >
-                                Delete
+                                <FontAwesomeIcon icon={faTrash} />
                             </button>
                         </div>
                         <EditableText
-                            onEditing={(content) => handlePathEdit(index, content)}
+                            onEditing={(content) => {
+                                optionEditor?.handlePathEdit(index, content);
+                                setOptionEditor(new OptionEditor(optionEditor?.Config));
+                            }}
                             element={o.path}
                         />
+                        {o.validationMsg && (
+                            <div className="error-message">
+                                <FontAwesomeIcon icon={faTriangleExclamation}/>
+                                {o.validationMsg}
+                                <FontAwesomeIcon icon={faTriangleExclamation}/>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
             <div className="button-group">
-                <button onClick={handleOptionAdd}>
-                    Add New +
+                <button onClick={() => {
+                    optionEditor?.handleOptionAdd();
+                    setOptionEditor(new OptionEditor(optionEditor?.Config));
+                }}>
+                    {"Add "}
+                    <FontAwesomeIcon icon={faPlus} />
                 </button>
             </div>
         </div>

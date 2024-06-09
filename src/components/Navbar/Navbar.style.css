@@ -13,9 +13,12 @@ nav {
     display: flex;
     justify-content: center;
     list-style-type: none;
+    color: white;
+    user-select: none;
 }
 
 .nav-link {
+    user-select: none;
     font-family: 'Roboto';
     font-size: large;
     font-weight: bold;

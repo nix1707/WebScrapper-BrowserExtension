@@ -39,7 +39,9 @@ const EditableText = ({ onEditing, element }: Props) => {
             className="tooltip-element"
             style={{ color: '#E8751A', wordBreak: 'break-all',  fontSize:'medium', fontWeight:"bold" }}>
               <span className="tooltip">{"Click to Edit"}</span>
-              {content ? content : "Click to Edit"}
+              {content ? 
+                (content.length > 80 ? content.slice(0, 80) + "..." : content) 
+                : "Click to Edit"}
           </p>
         </div>
       )}

@@ -1,10 +1,10 @@
-*{
+* {
   font-family: 'Roboto';
   margin: 0;
   padding: 0;
 }
 
-::selection{
+::selection {
   background-color: #dbfce4;
 }
 
@@ -17,17 +17,41 @@ body {
   background-color: #eeeff0;
 }
 
-.link{
+footer {
+  display: flex;
+  justify-content: space-evenly;
+  flex-shrink: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding:8px;
+}
+
+footer > label {
+  text-align: center;
+  color: #eee;
+  user-select: none;
+}
+
+footer > a {
+  cursor: pointer;
+  outline: none;
+  color: #eee;
+  user-select: none;
+}
+
+.link {
   color: #7E8EF1;
   cursor: pointer;
   font-size: small;
 }
 
-.link:hover{
+.link:hover {
   color: #615EFC;
 }
 
-.meta{
+.meta {
   color: #686D76;
   font-size: small;
 }
@@ -36,12 +60,18 @@ body {
   margin: 0;
   display: flex;
   min-width: 400px;
-  min-height: 100vh;
+  min-height: 450px;
+  max-height: 450px;
   flex-direction: column;
   background-color: #eeeff0;
 }
 
-label{
+.main > div {
+  flex-grow: 1; 
+  overflow-y: auto; 
+}
+
+label {
   color: #5C88C4;
   text-align: center !important;
   font-weight: bold;
@@ -64,7 +94,7 @@ textarea {
 
 }
 
-textarea:focus{
+textarea:focus {
   border: 3px solid #4ca0dc;
 }
 
@@ -90,16 +120,16 @@ input[type=text], select {
   outline: none;
 }
 
-input[type=text]:focus{
+input[type=text]:focus {
   border: 3px solid #4ca0dc;
 }
 
 button {
   background-color: #4fc87b;
   border: 0;
-  border-radius: 4px;;
+  border-radius: 4px;
   color: white;
-  padding: 15px 32px;
+  padding: 8px 16px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -110,48 +140,49 @@ button {
   transition: 0.1s ease;
 }
 
-button:hover{
+button:hover {
   background-color: #84d8a2;
 
 }
 
-.button-outlined{
+.button-outlined {
   border: 3px solid #4fc87b;
-  padding: 12px 29px;
+  padding: 6px 15px;
   background-color: white;
   color: #4fc87b;
 }
 
-.delete-button-small{
+.delete-button-small {
   background-color: #E72929;
   max-height: 35px !important;
-  /* max-width: 25px !important; */
   border: 0;
   padding: 8px 16px !important;
   text-align: center;
 }
 
-.delete-button-small:hover{
+.delete-button-small:hover {
   background-color: #EE4E4E;
 }
-.button-outlined:hover{
+
+.button-outlined:hover {
   background-color: #fff;
   border-color: #84d8a2;
   color: #84d8a2;
 }
 
-.button-group{
+.button-group {
   display: flex;
   justify-content: space-between !important;
 }
 
-.container{
+.container {
   margin-top: 5px;
   background: #fff;
   padding: 10px;
   border-radius: 4px;
 }
-.card{
+
+.card {
   margin-top: 5px;
   background: #fff;
   padding: 10px;
@@ -161,10 +192,28 @@ button:hover{
 }
 
 .scrollable-container {
-  max-height: 300px;
+  max-height: 240px;
   overflow-y: auto;
   border: 1px solid #ccc;
   padding: 10px;
+
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #4fc87b; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #84d8a2; 
 }
 
 .tooltip-element {
@@ -186,6 +235,21 @@ button:hover{
   width: max-content;
 }
 
-.tooltip-element:hover .tooltip{
+.tooltip-element:hover .tooltip {
   opacity: 1;
+}
+
+.error-message{
+  display: flex;
+  margin-top: 4px;
+  padding: 5px;
+  font-size: medium;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px dotted red;
+  border-radius: 4px;
+  word-break: break-all;
 }

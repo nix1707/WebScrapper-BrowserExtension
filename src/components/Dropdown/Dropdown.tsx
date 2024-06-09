@@ -1,5 +1,7 @@
 import { useState } from "react";
 import './Dropdown.style.css'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowTurnDown } from "@fortawesome/free-solid-svg-icons";
 
 interface DropdownItem {
     title: string;
@@ -17,7 +19,7 @@ const Dropdown = ({onSelected, items, onBlur} : Props) => {
 
   return (
     <div className="dropdown">
-          <button className="dropbtn">{current} ↓</button>
+          <button className="dropbtn">{current + " "} <FontAwesomeIcon icon={faArrowTurnDown} /></button>
           <div onBlur={onBlur} className="dropdown-content">
             {items.map((item,idx) => (
                 <a key={idx} onClick={() => {

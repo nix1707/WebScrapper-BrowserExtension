@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "My Chrome Extension",
+    "name": "ScrapeEase",
     "version": "1.0",
-    "description": "A React TypeScript Chrome extension to parse data from a website.",
+    "description": "ScrapeEase is your ultimate companion for effortless web data extraction. Whether you're a researcher, marketer, or just curious about data, ScrapeEase empowers you to gather information from any website with ease. With its intuitive interface and powerful scraping capabilities, you can extract text, links, and more in just a few clicks. Say goodbye to manual data collection and hello to streamlined web scraping with ScrapeEase. Simplify your research process and unlock valuable insights from the web today!",
     "permissions": [
         "activeTab",
         "scripting"

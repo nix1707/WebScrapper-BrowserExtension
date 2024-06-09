@@ -1,98 +1,78 @@
+import moment from "moment";
 import ParsedElement from "../models/parsedElement";
 
 class ElementParser {
+    private async getCurrentTarget(){
+        let[tab] = await chrome.tabs.query({active: true, currentWindow: true});
+        return { tabId: tab.id! }
+    }
 
     async findElementsBySelector(selectors: string[]): Promise<ParsedElement[]> {
-        selectors = selectors.filter(s => s !== "");
+        selectors = [...new Set(selectors)]
+            .filter(s => s !== "")
+            .map(s => s.replace(/:nth-child\(\d+\)/g, ''));;
 
-        try {
-            let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        const response = await chrome.scripting.executeScript({
+            target: await this.getCurrentTarget(),
 
-            const response = await chrome.scripting.executeScript({
-                target: { tabId: tab.id! },
-                func: (selectors: string[]) => {
-                    let elements: ParsedElement[] = [];
+            func: (selectors: string[], date: string) => {
+                let elements: ParsedElement[] = [];
 
-                    selectors.forEach(selector => {
-                        document.querySelectorAll(selector).forEach(e => {
-                            const date: Date = new Date();
+                selectors.forEach(selector => {
+                    document.querySelectorAll(selector).forEach(e => {
+                        let parsedData = e ? {
+                            date: date,
+                            value: e.textContent || "Unknown Content",
+                            urlFrom: window.location.href,
+                        } : null;
+                        if (parsedData) elements.push(parsedData);
+                    });
+                    
+                })
 
-                            const formattedDate = date.toISOString()
-                                    .slice(0, 10)
-                                    .replace(/-/g, '/')
-                                    .concat(' at ', date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                return [...new Set(elements)];
+            },
+            args: [selectors, moment().format("DD/MM/YYYY [at] hh:MM")],
+        }).catch(r => { console.log(r); return [] });
 
-                            let parsedData = e ? {
-                                date: formattedDate,
-                                value: e.textContent || "Not Found",
-                                urlFrom: window.location.href,
-                            } : null;
-                            if (parsedData) elements.push(parsedData);
-                        });
-                    })
-
-                    return elements;
-                },
-                args: [selectors],
-            });
-
-            return response[0].result!;
-        } catch (error) {
-            console.error("Error retrieving answer:", error);
-            return [];
-        }
+        return response[0].result!;
     }
 
     async findElementsByXpath(xpath: string[]): Promise<ParsedElement[]> {
-        xpath = xpath.filter(x => x !== "");
+        xpath = [...new Set(xpath)]
+            .filter(x => x !== "");
 
-        try {
-            let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        const response = await chrome.scripting.executeScript({
+            target: await this.getCurrentTarget(),
+            func: (xpath: string[], date: string) => {
+                let queries: XPathResult[] = [];
+                let elements: ParsedElement[] = [];
 
-            const response = await chrome.scripting.executeScript({
-                target: { tabId: tab.id! },
-                func: (xpath: string[]) => {
-                    let queries: XPathResult[] = [];
-                    let elements: ParsedElement[] = [];
+                xpath.forEach(path => {
+                    let query = document.evaluate(
+                        path, document, null,
+                        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+                    );
+                    queries.push(query);
+                })
 
-                    xpath.forEach(path => {
-                        let query = document.evaluate(
-                            path, document, null,
-                            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
-                        );
-                        queries.push(query);
-                    })
+                queries.forEach(query => {
+                    for (let i = 0; i < query.snapshotLength; i++) {
+                        if (!query.snapshotItem(i))
+                            continue;
+                        elements.push({
+                            date: date,
+                            value: query.snapshotItem(i)!.textContent || "Unknown Content",
+                            urlFrom: window.location.href,
+                        });
+                    }
+                });
+                return [...new Set(elements)];
+            },
+            args: [xpath, moment().format("DD/MM/YYYY [at] hh:MM")],
+        }).catch(r => { console.log(r); return [] });
 
-                    queries.forEach(query => {
-                        for (let i = 0; i < query.snapshotLength; i++) {
-                            if (query.snapshotItem(i)) {
-                                const date: Date = new Date();
-
-                                const formattedDate = date.toISOString()
-                                    .slice(0, 10)
-                                    .replace(/-/g, '/')
-                                    .concat(' at ', date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-
-                                elements.push({
-                                    date: formattedDate,
-                                    value: query.snapshotItem(i)!.textContent || "Not Found",
-                                    urlFrom: window.location.href,
-                                });
-                            }
-
-
-                        }
-                    });
-                    return elements;
-                },
-                args: [xpath],
-            });
-
-            return response[0].result!;
-        } catch (error) {
-            console.error("Error retrieving answer:", error);
-            return [];
-        }
+        return response[0].result!;
     }
 };
 

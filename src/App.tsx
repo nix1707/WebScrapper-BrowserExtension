@@ -1,14 +1,18 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
-import Home from "./components/Home/Home";
-import SettingsMenu from "./components/SettingsMenu/SettingsMenu";
-import HistoryMenu from "./components/HistoryMenu/HistoryMenu";
 import ParsedElement from "./models/parsedElement";
 import elementParser from "./services/ElementParser";
 import { ParseMethod } from "./models/ParseMethod";
 import History from "./services/History";
 import Config from "./models/config";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import HistoryMenu from "./components/HistoryMenu/HistoryMenu";
+import Home from "./components/Home/Home";
+import Navbar from "./components/Navbar/Navbar";
+import SettingsMenu from "./components/SettingsMenu/SettingsMenu";
+
 
 const getFilteredOptions = (config: Config, parseMethod: ParseMethod) => {
   return config.options
@@ -29,7 +33,6 @@ function App() {
       results = parseMethod === ParseMethod.ByXpath
         ? await elementParser.findElementsByXpath([elementPath])
         : await elementParser.findElementsBySelector([elementPath])
-      
     }
     else {
       const config = JSON.parse(localStorage.getItem('config')!) as Config;
@@ -55,21 +58,29 @@ function App() {
     <div className="main">
       <Navbar />
       <div style={{ padding: '5px 10px 10px 10px' }}>
-        <Routes>
-          <Route path="/" element={<Home
-            setParseMethod={setParseMethod}
-            handleClicked={handleClick}
-            answers={answers}
-            elementPath={elementPath}
-            setAnswers={setAnswers}
-            handlePathChanged={handlePathChange}
-            manualMode={manualMode}
-            setManualMode={setManualMode}
-          />} />
-          <Route path="/settings" element={<SettingsMenu />} />
-          <Route path="/history" element={<HistoryMenu />} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home
+              parseMethod={parseMethod}
+              setParseMethod={setParseMethod}
+              handleClicked={handleClick}
+              answers={answers}
+              elementPath={elementPath}
+              setAnswers={setAnswers}
+              handlePathChanged={handlePathChange}
+              manualMode={manualMode}
+              setManualMode={setManualMode}
+            />} />
+            <Route path="/settings" element={<SettingsMenu />} />
+            <Route path="/history" element={<HistoryMenu />} />
+          </Routes>
       </div>
+      <footer>
+        <label>Made with <FontAwesomeIcon icon={faHeart} /> by Voxy</label>
+        <a
+          onClick={() => chrome.tabs.create({ url: "https://github.com/nix1707" })}>
+          <FontAwesomeIcon style={{ width: 25, height: 25 }} href="" icon={faGithub} />
+        </a>
+      </footer>
     </div>
   );
 }
