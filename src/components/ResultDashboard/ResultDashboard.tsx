@@ -21,7 +21,13 @@ const ResultDashboard = ({ answers, setAnswers }: Props) => {
             </h2>
             <div className="scrollable-container" style={{ maxHeight: '100px !important' }}>
                 {answers.map(a => (
-                    <p style={{ fontSize: 'medium', fontWeight: 'bold', color: "#373A40" }}>
+                    <p style={{
+                        marginBottom: 10, 
+                        fontSize: 'medium', 
+                        fontWeight: 'bold', 
+                        color: "#373A40", 
+                        wordBreak: 'break-all'
+                    }}>
                         <FontAwesomeIcon icon={faCircleCheck} /> {" " + a.value}
                     </p>))}
             </div>

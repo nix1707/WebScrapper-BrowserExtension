@@ -125,7 +125,7 @@ input[type=text]:focus {
 }
 
 button {
-  background-color: #4fc87b;
+  background-color: #615EFC;
   border: 0;
   border-radius: 4px;
   color: white;
@@ -141,15 +141,15 @@ button {
 }
 
 button:hover {
-  background-color: #84d8a2;
+  background-color: #7E8EF1;
 
 }
 
 .button-outlined {
-  border: 3px solid #4fc87b;
+  border: 3px solid #615EFC;
   padding: 6px 15px;
   background-color: white;
-  color: #4fc87b;
+  color: #615EFC;
 }
 
 .delete-button-small {
@@ -166,8 +166,8 @@ button:hover {
 
 .button-outlined:hover {
   background-color: #fff;
-  border-color: #84d8a2;
-  color: #84d8a2;
+  border-color: #7E8EF1;
+  color: #7E8EF1;
 }
 
 .button-group {
@@ -186,7 +186,7 @@ button:hover {
   margin-top: 5px;
   background: #fff;
   padding: 10px;
-  border-bottom: 2px solid #4fc87b;
+  border-bottom: 2px solid #615EFC;
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   border-radius: 4px;
 }
@@ -208,12 +208,12 @@ button:hover {
 }
  
 ::-webkit-scrollbar-thumb {
-  background: #4fc87b; 
+  background: #615EFC; 
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #84d8a2; 
+  background: #7E8EF1; 
 }
 
 .tooltip-element {

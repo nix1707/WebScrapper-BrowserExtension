@@ -1,7 +1,7 @@
 nav {
     position: sticky;
     position: -webkit-sticky;
-    background-color: #4fc87b;
+    background-color: #615EFC;
     padding: 15px;
     top: 0;
     width: 100%;
@@ -30,5 +30,5 @@ nav {
 }
 
 .nav-link:hover {
-    background-color: #84d8a2;
+    background-color: #7E8EF1;
 }

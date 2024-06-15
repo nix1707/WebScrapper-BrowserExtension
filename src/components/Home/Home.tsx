@@ -1,4 +1,4 @@
-import { faMagnifyingGlass, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { faEraser, faMagnifyingGlass, faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { ParseMethod } from "../../models/ParseMethod";
 import ParsedElement from "../../models/parsedElement";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +9,7 @@ import SelectorValidator from "../../services/validators/SelectorValidator";
 
 interface Props {
   elementPath: string;
+  setElementPath: (path: string) => void;
   handlePathChanged: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleClicked: () => void;
   answers?: ParsedElement[];
@@ -22,7 +23,8 @@ interface Props {
 const Home = ({
   elementPath, answers,
   handlePathChanged, handleClicked,
-  setParseMethod, parseMethod, manualMode, setManualMode, setAnswers }: Props) => {
+  setParseMethod, parseMethod, manualMode,
+  setManualMode, setAnswers, setElementPath }: Props) => {
 
   const [isValid, setIsValid] =
     useState<{ result: boolean, msg: string }>({ result: true, msg: '' })
@@ -36,14 +38,14 @@ const Home = ({
   return (
 
     answers === undefined || answers.length > 0 === false ? (<div>
-      <Dropdown
+      {manualMode && <Dropdown
         onSelected={setParseMethod}
         items={
           [
             { title: "By Xpath (precise)", Id: 0 },
             { title: "By Selector (all-out)", Id: 1 }
           ]
-        } />
+        } />}
       <div className="container">
         <div style={{ marginBottom: 4 }}>
           <input checked={manualMode} onChange={e => setManualMode(e.target.checked)} type="checkbox" />
@@ -67,17 +69,27 @@ const Home = ({
           />
           {!isValid?.result &&
             <div className="error-message">
-                <FontAwesomeIcon icon={faTriangleExclamation} /> 
-                { isValid.msg }
-                <FontAwesomeIcon icon={faTriangleExclamation} /> 
+              <FontAwesomeIcon icon={faTriangleExclamation} />
+              {isValid.msg}
+              <FontAwesomeIcon icon={faTriangleExclamation} />
             </div>}
         </>
       )}
 
-      {isValid.result && <button onClick={handleClicked}>
-        {"Find "}
-        <FontAwesomeIcon icon={faMagnifyingGlass} />
-      </button>}
+      {isValid.result &&
+        <div className="button-group">
+          <button onClick={handleClicked}>
+            {"Find "}
+            <FontAwesomeIcon icon={faMagnifyingGlass} />
+          </button>
+          {manualMode &&
+            elementPath &&
+            <button className="button-outlined" onClick={() => setElementPath("")}>
+              {"Clear "}
+              <FontAwesomeIcon icon={faEraser} />
+            </button>
+          }
+        </div>}
 
     </div>) : (
       <ResultDashboard setAnswers={setAnswers} answers={answers} />

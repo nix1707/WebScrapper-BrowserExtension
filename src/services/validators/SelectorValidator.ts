@@ -1,8 +1,8 @@
 import { ParseMethod } from "../../models/ParseMethod";
 
 class SelectorValidator {
-    private static cssPattern = /^[a-zA-Z0-9\s>~+.#:[\]=^$*'"()-]*$/;
-    private static xpathPattern = /^(\/{1,2}[\w-]+(?:\[\w+(?:[=><!]+['"].+?['"])?\])?)*(\/?)$/;
+    private static cssPattern = /^[a-zA-Z0-9\s>~+_.#:[\]=^$*'"()-]*$/;
+    private static xpathPattern = /^(\/{1,2}[\w\*\.-]+(?:\[@[\w-]+=['"][^'"]*['"]\]|\[\d+\])?(?:\/[\w\*\.-]+(?:\[@[\w-]+=['"][^'"]*['"]\]|\[\d+\])?)*)*\/?$/;
 
     static isValidPath(path: string, parseMethod: ParseMethod) {
         if (parseMethod === ParseMethod.ByXpath)

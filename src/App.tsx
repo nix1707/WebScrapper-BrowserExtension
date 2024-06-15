@@ -65,6 +65,7 @@ function App() {
               handleClicked={handleClick}
               answers={answers}
               elementPath={elementPath}
+              setElementPath={setElementPath}
               setAnswers={setAnswers}
               handlePathChanged={handlePathChange}
               manualMode={manualMode}
